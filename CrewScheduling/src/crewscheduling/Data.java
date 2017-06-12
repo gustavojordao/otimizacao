@@ -15,8 +15,7 @@ public class Data {
     
     private static ArrayList<Bus> buses;
     private static ArrayList<Driver> drivers;
-    private static ArrayList<Assistant> assistants;
-    private static ArrayList<Shift> shifts;
+    private static ArrayList<Trip> trips;
     
     private Data(){
         
@@ -25,8 +24,7 @@ public class Data {
     public static void initialize(){
         buses = new ArrayList<Bus>();
         drivers = new ArrayList<Driver>();
-        assistants = new ArrayList<Assistant>();
-        shifts = new ArrayList<Shift>();
+        trips = new ArrayList<Trip>();
     }
     
     public static ArrayList<Bus> getBuses() {
@@ -45,20 +43,12 @@ public class Data {
         Data.drivers = drivers;
     }
 
-    public static ArrayList<Assistant> getAssistants() {
-        return assistants;
+    public static ArrayList<Trip> getTrips() {
+        return trips;
     }
 
-    public static void setAssistants(ArrayList<Assistant> assistants) {
-        Data.assistants = assistants;
-    }
-
-    public static ArrayList<Shift> getShifts() {
-        return shifts;
-    }
-
-    public static void setShifts(ArrayList<Shift> shifts) {
-        Data.shifts = shifts;
+    public static void setTrips(ArrayList<Trip> trips) {
+        Data.trips = trips;
     }
     
     public static void addBus(Bus bus){
@@ -68,13 +58,8 @@ public class Data {
     public static void addDriver(Driver driver){
         Data.drivers.add(driver);
     }
-        
-    public static void addAssistant(Assistant assistant){
-        Data.assistants.add(assistant);
-    }
-            
-    public static void addShift(Shift shift){
-        Data.shifts.add(shift);
-    }
     
+    public static void addTrip(Trip trip){
+        Data.trips.add(trip);
+    }
 }

@@ -9,14 +9,12 @@ package crewscheduling;
  *
  * @author gustavo
  */
-public class Shift {
+public class Trip {
     
     private int id;
-    private String description;
-
-    public Shift(int id, String description) {
+    
+    public Trip(int id) {
         this.id = id;
-        this.description = description;
     }
 
     public int getId() {
@@ -26,13 +24,4 @@ public class Shift {
     public void setId(int id) {
         this.id = id;
     }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    
 }

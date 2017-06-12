@@ -5,6 +5,8 @@
  */
 package crewscheduling;
 
+import java.util.Random;
+
 /**
  *
  * @author gustavo
@@ -16,29 +18,44 @@ public class Solution {
     }
     
     private static void initialize(){
+        Random r = new Random();
+        
         Data.initialize();
         
         // Dados serão lidos de arquivo, mas segue exemplo de como adicionar dados
-        
-        Data.addShift(new Shift(1, "MORNING"));
-        Data.addShift(new Shift(2, "AFTERNOON"));
-        Data.addShift(new Shift(3, "NIGHT"));
-        Data.addShift(new Shift(4, "DAWN"));
         
         Data.addDriver(new Driver(1, "Driver 01"));
         Data.addDriver(new Driver(2, "Driver 02"));
         Data.addDriver(new Driver(3, "Driver 03"));
         Data.addDriver(new Driver(4, "Driver 04"));
         
-        Data.addAssistant(new Assistant(1, "Assistant 01"));
-        Data.addAssistant(new Assistant(2, "Assistant 02"));
-        Data.addAssistant(new Assistant(3, "Assistant 03"));
-        Data.addAssistant(new Assistant(4, "Assistant 04"));
-        
         Data.addBus(new Bus(1));
         Data.addBus(new Bus(2));
         Data.addBus(new Bus(3));
         Data.addBus(new Bus(4));
+        
+        Data.addTrip(new Trip(1));
+        Data.addTrip(new Trip(2));
+        Data.addTrip(new Trip(3));
+        Data.addTrip(new Trip(4));
+        
+        // Inicializa parâmetros
+        
+        Parameters.WorkingTime = new Time("08:00");
+        
+        Parameters.InitialInstant = new Time[Data.getTrips().size()];
+        for(int i=0; i< Parameters.InitialInstant.length; i++){
+            Parameters.InitialInstant[i] = new Time(r.nextInt(24), r.nextInt(60));
+        }
+        
+        Parameters.Duration = new Time[Data.getTrips().size()];
+        for(int i=0; i< Parameters.Duration.length; i++){
+            Parameters.Duration[i] = new Time(r.nextInt(8), r.nextInt(60));
+        }
+        
+        // Inicializa variável de decisão
+        
+        Decision.initialize();
         
     }
     
