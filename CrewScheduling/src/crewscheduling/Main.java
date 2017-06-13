@@ -16,7 +16,18 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Solution.generate();
+        Solution s = new Solution(1.0);
+        
+        for(int i=0; i<Data.getBuses().size(); i++){
+            System.out.println("");
+            for(int j=0; j<Data.getDrivers().size(); j++){
+                System.out.print("/");
+                for(int k=0; k<Data.getTrips().size(); k++){
+                    System.out.print(Decision.getValue(i, j, k)+" ");
+                }
+            }
+        }
+        
     }
     
 }
