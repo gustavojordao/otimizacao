@@ -41,10 +41,12 @@ public class Solution {
         
         // Dados serão lidos de arquivo, mas segue exemplo de como adicionar dados
         
-        Data.addDriver(new Driver(0, "Driver 01"));
-        Data.addDriver(new Driver(1, "Driver 02"));
-        Data.addDriver(new Driver(2, "Driver 03"));
-        Data.addDriver(new Driver(3, "Driver 04"));
+        Parameters.readParameters("parameters.dat");
+        
+/*        Data.addDriver(new Driver(0, "Driver 00"));
+        Data.addDriver(new Driver(1, "Driver 01"));
+        Data.addDriver(new Driver(2, "Driver 02"));
+        Data.addDriver(new Driver(3, "Driver 03"));
         
         Data.addBus(new Bus(0));
         Data.addBus(new Bus(1));
@@ -69,7 +71,9 @@ public class Solution {
         for(int i=0; i< Parameters.Duration.length; i++){
             Parameters.Duration[i] = new Time(r.nextInt(8), r.nextInt(60));
         }
-        
+
+*/
+
         // Inicializa variável de decisão
         
         Decision.initialize();
@@ -78,64 +82,100 @@ public class Solution {
     
     private void process(){
         
-        // TODO: Lógica do algoritmo, assumindo que os dados já foram importados.
+        // Lógica do algoritmo, assumindo que os dados já foram importados.
         
         Random r = new Random();
         ArrayList<Trip> pendingTrips = new ArrayList<Trip>(Data.getTrips());
+        
+        // Ordena as viagens pela maior duração
+        
+        for(int i=0; i<pendingTrips.size(); i++){
+            for(int j=i+1; j<pendingTrips.size(); j++){
+                Trip t1 = pendingTrips.get(i);
+                Trip t2 = pendingTrips.get(j);
+                if(Time.compare(Parameters.Duration[t2.getId()], Parameters.Duration[t1.getId()]) > 0){
+                    pendingTrips.remove(i);
+                    pendingTrips.add(i, t2);
+                    pendingTrips.remove(j);
+                    pendingTrips.add(j, t1);
+                }
+            }
+        }
+                
         ArrayList<Driver> orderedDriversByTime = new ArrayList<Driver>(Data.getDrivers());
         
         for(Driver d : Data.getDrivers()){
-            workingTime[d.getId()] = getDriverWorkingTime(d);
+            //workingTime[d.getId()] = getDriverWorkingTime(d);
+            workingTime[d.getId()] = new Time("00:00");
         }
         
         // Define ônibus e motorista para a viagem
-        for(int i=0; i<pendingTrips.size(); i++){
+        while(!pendingTrips.isEmpty()){
             
             int indexTrip = r.nextInt((int) alpha*pendingTrips.size());
+            boolean variableSet = false;
             for(Bus b : Data.getBuses()){
-                int indexDriver = r.nextInt((int) alpha*orderedDriversByTime.size());
-                Decision.setValue(b.getId(), orderedDriversByTime.get(indexDriver).getId(), pendingTrips.get(indexTrip).getId(), 1);
-                pendingTrips.get(indexDriver);
                 
-                // Avalia restrições
-                
-                if(valid()){
-                    Driver d = orderedDriversByTime.get(indexDriver);
-                    workingTime[d.getId()] = getDriverWorkingTime(d);
+                for(int i=0; i<orderedDriversByTime.size(); i++){
+                    Driver d = orderedDriversByTime.get(i);
+                    //int indexDriver = r.nextInt((int) alpha*orderedDriversByTime.size());
+                    Decision.setValue(b.getId(), d.getId(), pendingTrips.get(indexTrip).getId(), 1);
                     
-                    orderedDriversByTime.remove(indexDriver);
-                    for(int j=0; j<orderedDriversByTime.size(); j++){
-                        Driver dIt = orderedDriversByTime.get(j);
-                        if(Time.compare(workingTime[d.getId()], workingTime[dIt.getId()]) >= 0){
-                            orderedDriversByTime.add(j, d);
-                            break;
+                    // Avalia restrições
+
+                    int status = valid();
+
+                    if(status == 0){
+                        workingTime[d.getId()] = getDriverWorkingTime(d);
+
+                        orderedDriversByTime.remove(i);
+                        for(int j=0; j<orderedDriversByTime.size(); j++){
+                            Driver dIt = orderedDriversByTime.get(j);
+                            if(Time.compare(workingTime[d.getId()], workingTime[dIt.getId()]) >= 0){
+                                orderedDriversByTime.add(j, d);
+                                break;
+                            }
                         }
+                        variableSet = true;
+                        break;
                     }
-                    break;
+                    else{
+                        System.out.println("Erro "+status);
+                        Decision.setValue(b.getId(), d.getId(), pendingTrips.get(indexTrip).getId(), 0);
+                        workingTime[d.getId()] = getDriverWorkingTime(d);
+                    }
                 }
-                else{
-                    Decision.setValue(b.getId(), indexDriver, pendingTrips.get(indexTrip).getId(), 0);
+                
+                if(variableSet){
+                    pendingTrips.remove(indexTrip);
+                    break;
                 }
             }
         }
         
     }
     
-    private static boolean valid(){
+    private static int valid(){
         
         // Motorista não pode estar em duas viagens simultaneamente
         for(Driver d : Data.getDrivers()){
             for(int i=0; i<Data.getTrips().size(); i++){
                 Trip t1 = Data.getTrips().get(i);
-                for(int j=i+1; j<Data.getTrips().size(); j++){
+                for(int j=0; j<Data.getTrips().size(); j++){
                     Trip t2 = Data.getTrips().get(j);
-                    for(Bus b : Data.getBuses()){
-                        if(Decision.getValue(b.getId(), d.getId(), t1.getId()) == 1){
-                            Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
-                            Time t2Initial = Parameters.InitialInstant[t2.getId()];
-                            
-                            if(Time.compare(t1Final, t2Initial) >= 0){
-                                return false;
+                    if(t1.getId() == t2.getId())
+                        continue;
+                    
+                    for(Bus b1 : Data.getBuses()){
+                        for(Bus b2 : Data.getBuses()){
+                            if(Decision.getValue(b1.getId(), d.getId(), t1.getId()) == 1 &&
+                                    Decision.getValue(b2.getId(), d.getId(), t2.getId()) == 1){
+                                Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
+                                Time t2Initial = Parameters.InitialInstant[t2.getId()];
+
+                                if(Time.compare(t1Final, t2Initial) >= 0){
+                                    return 1;
+                                }
                             }
                         }
                     }
@@ -153,26 +193,32 @@ public class Solution {
                             foundDriver = true;
                         }
                         else{
-                            return false;
+                            return 2;
                         }
                     }
                 }
             }
         }
-        
+                
         // Ônibus não pode estar em duas viagens simultaneamente
         for(Bus b : Data.getBuses()){
             for(int i=0; i<Data.getTrips().size(); i++){
                 Trip t1 = Data.getTrips().get(i);
-                for(int j=i+1; j<Data.getTrips().size(); j++){
+                for(int j=0; j<Data.getTrips().size(); j++){
                     Trip t2 = Data.getTrips().get(j);
-                    for(Driver d : Data.getDrivers()){
-                        if(Decision.getValue(b.getId(), d.getId(), t1.getId()) == 1){
-                            Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
-                            Time t2Initial = Parameters.InitialInstant[t2.getId()];
-                            
-                            if(Time.compare(t1Final, t2Initial) >= 0){
-                                return false;
+                    if(t1.getId() == t2.getId())
+                        continue;
+                    
+                    for(Driver d1 : Data.getDrivers()){
+                        for(Driver d2 : Data.getDrivers()){
+                            if(Decision.getValue(b.getId(), d1.getId(), t1.getId()) == 1 &&
+                                    Decision.getValue(b.getId(), d2.getId(), t2.getId()) == 1){
+                                Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
+                                Time t2Initial = Parameters.InitialInstant[t2.getId()];
+
+                                if(Time.compare(t1Final, t2Initial) >= 0){
+                                    return 3;
+                                }
                             }
                         }
                     }
@@ -190,23 +236,28 @@ public class Solution {
                             foundBus = true;
                         }
                         else{
-                            return false;
+                            return 4;
                         }
                     }
                 }
             }
         }
+        
+        // Motorista não pode trabalhar mais que o limite de horas estabelecido
+        for(Driver d : Data.getDrivers()){
+            Time worked = getDriverWorkingTime(d);
+            if(Time.compare(worked, Parameters.WorkingTime) >= 0){
+                return 5;
+            }
+        }
                 
-        return true;
+        return 0;
     }
     
-/*    public static void generate(){
-        
-        initialize();
-        
-        process();
+    public Time[] getWorkingTimes(){
+        return workingTime;
     }
-*/    
+    
     public static Time getDriverWorkingTime(Driver d){
         
         Time time = new Time("00:00");

@@ -46,7 +46,9 @@ public class Time {
     }
     
     public static Time add(Time t, Time duration){
-        return new Time(t.hour+duration.hour, t.minute+duration.minute);
+        int minutes = (t.minute+duration.minute)%60;
+        int extraHour = (t.minute+duration.minute)/60;
+        return new Time(t.hour+duration.hour+extraHour, minutes);
     }
 
     public int getHour() {
@@ -59,7 +61,7 @@ public class Time {
 
     @Override
     public String toString() {
-        return hour + ":" + minute;
+        return String.format("%02d:%02d", hour, minute);
     }
         
 }

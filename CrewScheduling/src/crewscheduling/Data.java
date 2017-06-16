@@ -5,7 +5,13 @@
  */
 package crewscheduling;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -62,4 +68,5 @@ public class Data {
     public static void addTrip(Trip trip){
         Data.trips.add(trip);
     }
+    
 }
