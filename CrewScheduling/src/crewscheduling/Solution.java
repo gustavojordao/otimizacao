@@ -161,20 +161,29 @@ public class Solution {
         for(Driver d : Data.getDrivers()){
             for(int i=0; i<Data.getTrips().size(); i++){
                 Trip t1 = Data.getTrips().get(i);
-                for(int j=0; j<Data.getTrips().size(); j++){
+                for(int j=i+1; j<Data.getTrips().size(); j++){
                     Trip t2 = Data.getTrips().get(j);
-                    if(t1.getId() == t2.getId())
-                        continue;
                     
                     for(Bus b1 : Data.getBuses()){
                         for(Bus b2 : Data.getBuses()){
                             if(Decision.getValue(b1.getId(), d.getId(), t1.getId()) == 1 &&
                                     Decision.getValue(b2.getId(), d.getId(), t2.getId()) == 1){
-                                Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
-                                Time t2Initial = Parameters.InitialInstant[t2.getId()];
+                                
+                                if(Time.compare(Parameters.InitialInstant[t1.getId()], Parameters.InitialInstant[t2.getId()]) <= 0){
+                                    Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
+                                    Time t2Initial = Parameters.InitialInstant[t2.getId()];
 
-                                if(Time.compare(t1Final, t2Initial) >= 0){
-                                    return 1;
+                                    if(Time.compare(t1Final, t2Initial) >= 0){
+                                        return 1;
+                                    }
+                                }
+                                else{
+                                    Time t2Final = Time.add(Parameters.InitialInstant[t2.getId()], Parameters.Duration[t2.getId()]);
+                                    Time t1Initial = Parameters.InitialInstant[t1.getId()];
+
+                                    if(Time.compare(t2Final, t1Initial) >= 0){
+                                        return 1;
+                                    }
                                 }
                             }
                         }
@@ -204,20 +213,29 @@ public class Solution {
         for(Bus b : Data.getBuses()){
             for(int i=0; i<Data.getTrips().size(); i++){
                 Trip t1 = Data.getTrips().get(i);
-                for(int j=0; j<Data.getTrips().size(); j++){
+                for(int j=i+1; j<Data.getTrips().size(); j++){
                     Trip t2 = Data.getTrips().get(j);
-                    if(t1.getId() == t2.getId())
-                        continue;
                     
                     for(Driver d1 : Data.getDrivers()){
                         for(Driver d2 : Data.getDrivers()){
                             if(Decision.getValue(b.getId(), d1.getId(), t1.getId()) == 1 &&
                                     Decision.getValue(b.getId(), d2.getId(), t2.getId()) == 1){
-                                Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
-                                Time t2Initial = Parameters.InitialInstant[t2.getId()];
+                                
+                                if(Time.compare(Parameters.InitialInstant[t1.getId()], Parameters.InitialInstant[t2.getId()]) <= 0){
+                                    Time t1Final = Time.add(Parameters.InitialInstant[t1.getId()], Parameters.Duration[t1.getId()]);
+                                    Time t2Initial = Parameters.InitialInstant[t2.getId()];
 
-                                if(Time.compare(t1Final, t2Initial) >= 0){
-                                    return 3;
+                                    if(Time.compare(t1Final, t2Initial) >= 0){
+                                        return 3;
+                                    }
+                                }
+                                else{
+                                    Time t2Final = Time.add(Parameters.InitialInstant[t2.getId()], Parameters.Duration[t2.getId()]);
+                                    Time t1Initial = Parameters.InitialInstant[t1.getId()];
+
+                                    if(Time.compare(t2Final, t1Initial) >= 0){
+                                        return 3;
+                                    }
                                 }
                             }
                         }

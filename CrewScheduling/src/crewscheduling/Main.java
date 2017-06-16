@@ -52,11 +52,11 @@ public class Main {
             i++;
         }
         
-        for(i=0; i<Data.getBuses().size(); i++){
+        for(i=0; i<Data.getDrivers().size(); i++){
             System.out.println("");
-            System.out.println("Bus "+i);
-            for(int j=0; j<Data.getDrivers().size(); j++){
-                System.out.print("Driver "+j+" -> ");
+            System.out.println("Driver "+i);
+            for(int j=0; j<Data.getBuses().size(); j++){
+                System.out.print("Bus "+j+" -> ");
                 for(int k=0; k<Data.getTrips().size(); k++){
                     System.out.print(Decision.getValue(i, j, k)+" ");
                 }
