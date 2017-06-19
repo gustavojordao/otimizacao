@@ -11,13 +11,13 @@ package crewscheduling;
  */
 public class Decision {
     
-    private static int[][][] x;
+    private int[][][] x;
     
-    private Decision(){
-        
+    public Decision(){
+        initialize();
     }
     
-    public static void initialize(){
+    public void initialize(){
         int numBuses = Data.getBuses().size();
         int numDrivers = Data.getDrivers().size();
         int numTrips = Data.getTrips().size();
@@ -34,15 +34,15 @@ public class Decision {
         }
     }
     
-    public static int[][][] getX(){
+    public int[][][] getX(){
         return x;
     }
     
-    public static void setValue(int b, int d, int t, int value){
+    public void setValue(int b, int d, int t, int value){
         x[b][d][t] = value;
     }
 
-    public static int getValue(int b, int d, int t){
+    public int getValue(int b, int d, int t){
         return x[b][d][t];
     }
     

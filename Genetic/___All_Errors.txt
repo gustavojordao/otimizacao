@@ -1,3 +1,0 @@
-The following files/folders have not been downloaded
-1. Genetic/build/classes/.netbeans_automatic_build
-2. Genetic/build/classes/.netbeans_update_resources
