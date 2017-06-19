@@ -43,37 +43,6 @@ public class Solution {
         
         Parameters.readParameters("parameters.dat");
         
-/*        Data.addDriver(new Driver(0, "Driver 00"));
-        Data.addDriver(new Driver(1, "Driver 01"));
-        Data.addDriver(new Driver(2, "Driver 02"));
-        Data.addDriver(new Driver(3, "Driver 03"));
-        
-        Data.addBus(new Bus(0));
-        Data.addBus(new Bus(1));
-        Data.addBus(new Bus(2));
-        Data.addBus(new Bus(3));
-        
-        Data.addTrip(new Trip(0));
-        Data.addTrip(new Trip(1));
-        Data.addTrip(new Trip(2));
-        Data.addTrip(new Trip(3));
-        
-        // Inicializa parâmetros
-        
-        Parameters.WorkingTime = new Time("08:00");
-        
-        Parameters.InitialInstant = new Time[Data.getTrips().size()];
-        for(int i=0; i< Parameters.InitialInstant.length; i++){
-            Parameters.InitialInstant[i] = new Time(r.nextInt(24), r.nextInt(60));
-        }
-        
-        Parameters.Duration = new Time[Data.getTrips().size()];
-        for(int i=0; i< Parameters.Duration.length; i++){
-            Parameters.Duration[i] = new Time(r.nextInt(8), r.nextInt(60));
-        }
-
-*/
-
         // Inicializa variável de decisão
         
         Decision.initialize();
@@ -112,7 +81,11 @@ public class Solution {
         // Define ônibus e motorista para a viagem
         while(!pendingTrips.isEmpty()){
             
-            int indexTrip = r.nextInt((int) alpha*pendingTrips.size());
+            int window = (int) alpha*pendingTrips.size();
+            
+            window = window == 0 ? 1 : window;
+            
+            int indexTrip = r.nextInt(window);
             boolean variableSet = false;
             for(Bus b : Data.getBuses()){
                 
@@ -140,7 +113,7 @@ public class Solution {
                         break;
                     }
                     else{
-                        System.out.println("Erro "+status);
+                        //System.out.println("Erro "+status);
                         Decision.setValue(b.getId(), d.getId(), pendingTrips.get(indexTrip).getId(), 0);
                         workingTime[d.getId()] = getDriverWorkingTime(d);
                     }
@@ -152,6 +125,53 @@ public class Solution {
                 }
             }
         }
+        
+    }
+    
+    private void localSearch(){
+        
+        ArrayList<Driver> changeable = new ArrayList<Driver>();
+        ArrayList<Driver> notUsed = new ArrayList<Driver>();
+        ArrayList<Driver> used = new ArrayList<Driver>();
+        
+        for(Driver d : Data.getDrivers()){
+            int sum = 0;
+            for(Trip t : Data.getTrips()){
+                for(Bus b : Data.getBuses()){
+                    if(Decision.getValue(b.getId(), d.getId(), t.getId()) == 1){
+                        sum++;
+                    }
+                }
+            }
+            
+            if(sum == 1){
+                changeable.add(d);
+            }
+            else if(sum == 0){
+                notUsed.add(d);
+            }
+            else{
+                used.add(d);
+            }
+        }
+        
+        for(Driver dc : changeable){
+            int b_id;
+            int t_id;
+            for(Trip t : Data.getTrips()){
+                for(Bus b : Data.getBuses()){
+                    if(Decision.getValue(b.getId(), dc.getId(), t.getId()) == 1){
+                        b_id = b.getId();
+                        t_id = t.getId();
+                    }
+                }
+            }
+
+            for(Driver du : used){
+                
+            }
+        }
+        
         
     }
     
@@ -288,6 +308,62 @@ public class Solution {
         }
         
         return time;
+    }
+    
+    public int getNumberOfDrivers(){
+        
+        int sum = 0;
+        boolean found = false;
+        
+        for(Driver d : Data.getDrivers()){
+            found = false;
+            for(Trip t : Data.getTrips()){
+                for(Bus b : Data.getBuses()){
+                    if(Decision.getValue(b.getId(), d.getId(), t.getId()) == 1){
+                        found = true;
+                        //break;
+                    }
+                }
+                if(found){
+                    //break;
+                }
+            }
+
+            if(found){
+                sum++;
+            }
+            
+        }
+        
+        return sum;
+    }
+    
+    public int getNumberOfBuses(){
+        
+        int sum = 0;
+        boolean found = false;
+        
+        for(Bus b : Data.getBuses()){
+            found = false;
+            for(Trip t : Data.getTrips()){
+                for(Driver d : Data.getDrivers()){
+                    if(Decision.getValue(b.getId(), d.getId(), t.getId()) == 1){
+                        found = true;
+                        //break;
+                    }
+                }
+                if(found){
+                    //break;
+                }
+            }
+
+            if(found){
+                sum++;
+            }
+            
+        }
+        
+        return sum;
     }
     
 }

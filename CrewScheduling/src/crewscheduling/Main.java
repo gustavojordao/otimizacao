@@ -21,8 +21,7 @@ public class Main {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        Parameters.generateParameters(4, new Time("08:00"));
-        
+        Parameters.generateParameters(10, new Time("08:00")); 
         
         System.out.println("---------------");
         
@@ -58,12 +57,16 @@ public class Main {
             for(int j=0; j<Data.getBuses().size(); j++){
                 System.out.print("Bus "+j+" -> ");
                 for(int k=0; k<Data.getTrips().size(); k++){
-                    System.out.print(Decision.getValue(i, j, k)+" ");
+                    System.out.print(Decision.getValue(j, i, k)+" ");
                 }
                 System.out.println("/");
                 
             }
         }
+        
+        System.out.println("\nNumber of Drivers: "+s.getNumberOfDrivers());
+        System.out.println("\nNumber of Buses: "+s.getNumberOfBuses());
+        
         
     }
     
