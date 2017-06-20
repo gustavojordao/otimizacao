@@ -61,7 +61,7 @@ public class Main {
                 //System.out.println("IT "+i);                
             }
         }
-        /*
+        
         
         System.out.println("Working Time");
         System.out.println(Parameters.WorkingTime.toString());
@@ -98,7 +98,7 @@ public class Main {
                 
             }
         }
-        */
+        
         System.out.println("Number of Trips: "+Data.getTrips().size());
         System.out.println("Number of Drivers: "+s.getNumberOfDrivers());
         System.out.println("Number of Buses: "+s.getNumberOfBuses());
