@@ -207,6 +207,7 @@ public class Solution {
         for(int i=0; i<underAverage.size(); i++){
             Driver d_under = underAverage.get(i);
             for(Trip t : Data.getTrips()){
+                boolean ended = false;
                 for(Bus b : Data.getBuses()){
                     if(decision.getValue(b.getId(), d_under.getId(), t.getId()) == 1){
                         for(Driver d_over : overAverage){
@@ -220,6 +221,7 @@ public class Solution {
                             workingTime[d_over.getId()] = getDriverWorkingTime(d_over);
 
                             if(valid() == 0){
+                                ended = true;
                                 break;
                             }
                             else{
@@ -231,9 +233,10 @@ public class Solution {
                             }
                         }
                         
-                        for(Driver d_new_over : underAverage){
+                        for(int j=0; j<underAverage.size(); j++){
 //                            int d_ind = r.nextInt(overAverage.size());
 //                            int d = overAverage.get(d_ind).getId();
+                            Driver d_new_over = underAverage.get(j);
                             if(d_under.getId() == d_new_over.getId())
                                 continue;
 
@@ -246,8 +249,9 @@ public class Solution {
                             if(valid() == 0){
                                 if(Time.compare(workingTime[d_new_over.getId()], average) > 0){
                                     overAverage.add(d_new_over);
-                                    underAverage.remove(i);
+                                    underAverage.remove(j);
                                 }
+                                ended = true;
                                 break;
                             }
                             else{
@@ -257,6 +261,10 @@ public class Solution {
                                 decision.setValue(b.getId(), d_new_over.getId(), t.getId(), 0);
                                 workingTime[d_new_over.getId()] = getDriverWorkingTime(d_new_over);
                             }
+                        }
+                        
+                        if(ended){
+                            break;
                         }
                     }
                 }
