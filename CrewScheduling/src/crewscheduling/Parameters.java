@@ -24,6 +24,8 @@ import java.util.stream.Stream;
  */
 public class Parameters {
     
+    public static String Filename;
+    
     // Trip parameters
     
     public static Time[] InitialInstant;
@@ -39,7 +41,7 @@ public class Parameters {
         PrintStream ps = null;
         try {
             Random r = new Random();
-            ps = new PrintStream(new File("parameters.dat"));
+            ps = new PrintStream(new File(Filename));
             
             ps.printf(workingTime.toString());
             
@@ -66,10 +68,10 @@ public class Parameters {
         
     }
     
-    public static void readParameters(String filename){
+    public static void readParameters(){
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(filename));
+            br = new BufferedReader(new FileReader(Filename));
             
             Iterator it = br.lines().iterator();
             ArrayList<String> str = new ArrayList<String>();

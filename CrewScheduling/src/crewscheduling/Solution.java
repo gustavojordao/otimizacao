@@ -57,7 +57,7 @@ public class Solution {
         
         // Dados serão lidos de arquivo, mas segue exemplo de como adicionar dados
         
-        Parameters.readParameters("parameters.dat");        
+        Parameters.readParameters();        
     }
     
     private void process(){

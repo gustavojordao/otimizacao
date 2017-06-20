@@ -27,22 +27,23 @@ public class Main {
         
         if(args.length < 4){
             System.out.println("Parâmetros inválidos. Use os parâmetros abaixo.");
-            System.out.println("<JAR_NAME> <ITERATIONS=INT>" + " " + "<ALPHA=0..1>" + " " + "<WORKING_TIME=HH:MM>" + " " + "<GENERATE_PARAMETERS=0|1>" + " " + "<NUMBER_OF_TRIPS=INT>");
-            System.out.println("Exemplo: crewsc.jar" + " " + "20" + " " + "1.0" + " " + "08:00" + " " + "0" + " " + "10");
+            System.out.println("<JAR_NAME> <PARAMETERS_FILE> <ITERATIONS=INT>" + " " + "<ALPHA=0..1>" + " " + "<WORKING_TIME=HH:MM>" + " " + "<GENERATE_PARAMETERS=0|1>" + " " + "<NUMBER_OF_TRIPS=INT>");
+            System.out.println("Exemplo: crewsc.jar" + " " + "parameters.dat" + " " + "20" + " " + "1.0" + " " + "08:00" + " " + "0" + " " + "10");
             System.exit(0);
         }
         else{
-            if(args.length == 5){
-                if(args[3].equals("1")){
-                    Parameters.generateParameters(Integer.parseInt(args[4]), new Time(args[2]));
+            Parameters.Filename = args[0];
+            if(args.length == 6){
+                if(args[4].equals("1")){
+                    Parameters.generateParameters(Integer.parseInt(args[5]), new Time(args[3]));
                 }
             }
         }
         
         System.out.println("---------------");
         
-        int iterations = Integer.valueOf(args[0]);
-        double alpha = Double.valueOf(args[1]);
+        int iterations = Integer.valueOf(args[1]);
+        double alpha = Double.valueOf(args[2]);
         int i=0;
         Solution s = null;
         for(i=0; i<iterations; i++){
